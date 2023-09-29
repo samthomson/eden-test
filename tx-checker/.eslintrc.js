@@ -1,20 +1,25 @@
 module.exports = {
-	extends: [
-	  "react-app",
-	  "plugin:prettier/recommended"
-	],
+	parser: "@typescript-eslint/parser",
+
+	parserOptions: {
+		ecmaVersion: 2020,
+
+		sourceType: "module",
+
+		ecmaFeatures: {
+			jsx: true,
+		},
+	},
+
+	extends: ["plugin:react/recommended", "plugin:prettier/recommended"],
 	rules: {
-	  "prettier/prettier": [
-		"error",
-		{
-		  "semi": false
-		}
-	  ],
-	  "semi": [
-		"error",
-		"never"
-	  ],
-	  "indent": ["error", "tab"]
-	}
-  };
-  
+		"prettier/prettier": [
+			"error",
+			{
+				semi: false,
+			},
+		],
+		semi: ["error", "never"],
+		indent: ["error", "tab"],
+	},
+}
