@@ -59,8 +59,10 @@ const TXChecker: React.FC = () => {
 					value={txInput}
 					disabled={isLoading}
 					onChange={(val) => setTxInput(val.currentTarget.value)}
+					size={70}
 				/>
-				<input type="submit" value="Submit" disabled={isLoading} />
+				&nbsp;
+				<input type="submit" value="Get info" disabled={isLoading} />
 			</form>
 			<hr />
 			{isLoading && <>loading...</>}

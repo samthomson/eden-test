@@ -31,7 +31,7 @@ assumptions:
 
 NOTE / TODO:
 - check size/fee calculation carefully CURRENTLY WRONG
-- make form button 'get info'
+- broad range of test txs
 
 ## test data
 
