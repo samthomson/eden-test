@@ -9,7 +9,9 @@ type UseStoreTXDataResult = {
 	isLoading: boolean
 	error: string | null
 }
-// todo: think about how all this is hardcoded
+
+// ideally this would be outwith this component, and perhaps with env vars passed in more appropriately. outwith the scope of this grade of task.
+// likewise keys/ids should be 'secured' ie whitelist certain hosts only
 const firebaseConfig = {
 	apiKey: "AIzaSyA_XUPTK2gSD7CXR-CJpv9d-K9scnx1mEQ",
 	authDomain: "eden-code-challenge.firebaseapp.com",

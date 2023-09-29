@@ -6,73 +6,90 @@ interface useTxAPI {
 	checkTx: (txId: string) => Promise<void>
 	txData: Types.TransactionData | undefined
 	loading: boolean
-	error: string | null
+	error?: string
 }
-// todo: add some docs about responsibility
+
+/**
+ * This hook is responsible for getting relevant tx and blockchain data,
+ * and putting it together into a format we'll use in the app.
+ * For simplicity, there is just one method, although breaking it up into
+ * functions for fetching each data point (tx, blockheight), and
+ * parsing/assembling the data we need would be better (more maintainable,
+ * extensible, readable, and testable)
+ */
 
 const useTxAPI = (): useTxAPI => {
-	// todo: use undefined over null where it makes sense
 	const [data, setData] = React.useState<Types.TransactionData | undefined>(
 		undefined
 	)
 	const [loading, setLoading] = React.useState<boolean>(false)
-	const [error, setError] = React.useState<string | null>(null)
+	// this is ultimately redundant, as we won't be doing any ui/ux for errors
+	const [error, setError] = React.useState<string | undefined>(undefined)
 
 	const checkTx = async (txId: string): Promise<void> => {
 		setLoading(true)
-		setError(null)
+		setError(undefined)
 
 		try {
+			const lastStatusAt = new Date().toISOString()
+
+			// First, let's get all the data we'll need
+
 			// look up both tx data, and current block height - to polyfill the confirmation count
-			// todo: type responses?
 			const txDataResponse = await fetch(`https://mempool.space/api/tx/${txId}`)
 
+			// handle 400 error from api accordingly
 			if (txDataResponse.status === 400) {
 				setData({
 					isBroadCast: false,
 					txId,
 					status: "Transaction not found.",
-					// todo: duplication here with below, write something more elegant
-					lastStatusAt: new Date().toISOString(),
+					lastStatusAt,
 				} as Types.TXData.Incomplete)
 				return
 			}
 
-			if (!txDataResponse?.ok) {
-				setError("Failed to fetch transaction data")
-			}
 			const txData: Types.API.TXData = await txDataResponse.json()
 
-			const blockHeightResponse = await fetch(
-				`https://mempool.space/api/blocks/tip/height`
-			)
-			const currentBlockHeight = await blockHeightResponse.json()
+			const confirmationCount = await (async () => {
+				const blockHeightResponse = await fetch(
+					`https://mempool.space/api/blocks/tip/height`
+				)
 
-			if (!txDataResponse?.ok) {
-				console.log("response not ok?", txDataResponse)
-				setError("Failed to fetch block tip data")
+				if (!txDataResponse?.ok) {
+					setError("Failed to fetch block tip data")
+					return null
+				}
+
+				const currentBlockHeight: number = await blockHeightResponse.json()
+				return currentBlockHeight - txData.status.block_height
+			})()
+
+			// fail fast if response is malformed at all
+			if (!txDataResponse?.ok || confirmationCount === null) {
+				setError("Failed to fetch transaction or blockheight data")
+				return
 			}
 
-			console.log(txData)
-			console.log(currentBlockHeight)
+			// Second, now that we have the data we need, let's put it together in a meaningful way
 
-			const isConfirmed = txData.status.confirmed
-			const confirmationCount = currentBlockHeight - txData.status.block_height
-
-			const { fee: ignoreThisFee, weight } = txData
+			const {
+				fee: ignoreThisFee,
+				weight,
+				status: { confirmed: isConfirmed },
+			} = txData
 
 			const fee = DataUtil.deriveFeeFromTXData(txData)
 			const satsPerVbyte = DataUtil.getVSatsPerByte(fee, weight)
 
 			const data: Types.TXData.Complete = {
 				isBroadCast: true,
-				// todo: standardise this prop
 				txId,
 				status: isConfirmed
 					? `The transaction has ${confirmationCount} confirmations`
 					: "Transaction is currently in the mempool and has 0 block-confirmations",
 				confirmations: confirmationCount,
-				lastStatusAt: new Date().toISOString(),
+				lastStatusAt,
 				satsPerVbyte,
 			}
 
