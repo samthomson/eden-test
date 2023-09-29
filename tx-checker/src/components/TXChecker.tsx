@@ -4,6 +4,7 @@ import useStoreTXData from "../hooks/useStoreTXData"
 
 const TXChecker: React.FC = () => {
 	const { checkTx, data, loading, error } = useTxAPI()
+	const { storeTXData } = useStoreTXData()
 
 	const [txInput, setTxInput] = React.useState<string>("")
 
@@ -18,6 +19,18 @@ const TXChecker: React.FC = () => {
 
 	React.useEffect(() => {
 		console.log("data", data)
+		if (!!data) {
+			// we just got data back from the API, let's store it to fireb
+			storeTXData({
+				txId: data.txid,
+				// todo: derive proper status
+				lastStatus: "last status",
+				// todo: derive this too
+				lastStatusAt: 21000000,
+				// todo: and this
+				satsPerVbyte: 999,
+			})
+		}
 	}, [data])
 
 	return (

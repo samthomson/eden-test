@@ -11,14 +11,14 @@ interface TransactionData {
 
 interface useTxAPI {
 	checkTx: (txId: string) => Promise<void>
-	data: TransactionData | null
+	data: TransactionData | undefined
 	loading: boolean
 	error: string | null
 }
 
 const useTxAPI = (): useTxAPI => {
 	// todo: use undefined over null where it makes sense
-	const [data, setData] = React.useState<TransactionData | null>(null)
+	const [data, setData] = React.useState<TransactionData | undefined>(undefined)
 	const [loading, setLoading] = React.useState<boolean>(false)
 	const [error, setError] = React.useState<string | null>(null)
 

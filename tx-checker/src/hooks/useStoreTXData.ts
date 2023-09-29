@@ -24,6 +24,7 @@ const useStoreTXData = (): UseStoreTXDataResult => {
 
 		try {
 			// todo: store data in fireb
+			console.log("store this data", data)
 			return true
 		} catch (err) {
 			setError(err instanceof Error ? err.message : "An unknown error occurred")
