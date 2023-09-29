@@ -5,8 +5,8 @@ interface TransactionData {
 	txid: string
 	status: string
 	confirmations?: number
-	// todo: lastStatusAt
-	// todo: satsPerVbyte
+	lastStatusAt: string
+	satsPerVbyte?: number
 }
 
 interface useTxAPI {
@@ -29,12 +29,15 @@ const useTxAPI = (): useTxAPI => {
 
 		try {
 			// look up both tx data, and current block height - to polyfill the confirmation count
+			// todo: type responses?
 			const txDataResponse = await fetch(`https://mempool.space/api/tx/${txId}`)
 
 			if (txDataResponse.status === 400) {
 				setData({
 					txid: txId,
 					status: "Transaction not found.",
+					// todo: duplication here with below, write something more elegant
+					lastStatusAt: new Date().toISOString(),
 				})
 				return
 			}
@@ -67,6 +70,8 @@ const useTxAPI = (): useTxAPI => {
 					? `The transaction has ${confirmationCount} confirmations`
 					: "Transaction is currently in the mempool and has 0 block-confirmations",
 				confirmations: confirmationCount,
+				lastStatusAt: new Date().toISOString(),
+				satsPerVbyte: txData.size / txData.fee,
 			}
 
 			setData(data)

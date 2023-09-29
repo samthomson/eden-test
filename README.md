@@ -27,10 +27,10 @@ assumptions:
 - happy storing duplicate txs (no upserting via tx id)
 - I called the api a second time (per tx) to calculate the confirmations, I could have made an approximation based on the block_height but this is one parameter I thought worth ensuring
 - I called mempools raw api instead of using their package which would have required some polyfilling for the browser (doable but not a priority for this grade). two reqs in one place was still simple enough, albeit on the verge of justifying a refactor.
+- I chose to represent the `lastStatusAt` as a string representation, since we are only using it in the db record (where iso string timestamps are more typical, compared to unix [milli]seconds)
 
 NOTE / TODO:
-- check size calculation carefully
-
+- check size/fee calculation carefully CURRENTLY WRONG
 - make form button 'get info'
 - DO update the block status in our db
 

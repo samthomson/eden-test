@@ -6,7 +6,7 @@ import * as FireBaseStore from "firebase/firestore"
 type TXData = {
 	txId: string
 	lastStatus: string
-	lastStatusAt: number
+	lastStatusAt: string
 	satsPerVbyte: number
 }
 

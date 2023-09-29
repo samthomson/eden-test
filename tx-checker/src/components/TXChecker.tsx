@@ -26,14 +26,17 @@ const TXChecker: React.FC = () => {
 		if (!!txData) {
 			setRetrievedTXData(txData)
 			// we got data back from the API, let's store it to fireb
+			const { txid, status, lastStatusAt, satsPerVbyte } = txData
+			// if ()
 			storeTXData({
-				txId: txData.txid,
+				txId: txid,
 				// todo: derive proper status
-				lastStatus: "last status",
+				lastStatus: status,
 				// todo: derive this too
-				lastStatusAt: 21000000,
+				lastStatusAt,
 				// todo: and this
-				satsPerVbyte: 999,
+				// default to better than 0
+				satsPerVbyte: satsPerVbyte ?? 0,
 			})
 		}
 	}, [txData])
