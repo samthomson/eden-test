@@ -5,7 +5,7 @@ interface TransactionData {
 	txid: string
 	status: {
 		confirmed: boolean
-		block_height: number
+		block_height?: number
 	}
 }
 
