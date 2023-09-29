@@ -38,11 +38,7 @@ const useStoreTXData = (): UseStoreTXDataResult => {
 		try {
 			const docRef = FireBaseStore.doc(db, "transactions", data.txId)
 
-			const updatedDoc = await FireBaseStore.setDoc(
-				docRef,
-				{ ...data },
-				{ merge: true }
-			)
+			await FireBaseStore.setDoc(docRef, { ...data }, { merge: true })
 
 			return
 		} catch (err: unknown) {
