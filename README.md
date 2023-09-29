@@ -25,3 +25,9 @@ assumptions:
 
 NOTE / TODO:
 - check size calculation carefully
+- confirmation count not included in api response. could make a crude estimate based on average blocktime or otherwise get the current block height and determine delta.
+
+
+## test data
+
+genesis block coinbase tx (eg blockheight 0): 4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b

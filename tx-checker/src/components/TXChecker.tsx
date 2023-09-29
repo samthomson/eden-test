@@ -38,8 +38,12 @@ const TXChecker: React.FC = () => {
 				<>
 					<h4>{data.txid}</h4>
 					confirmed: {data.status.confirmed.toString()}
-					<br />
-					blockheight?: {data.status.block_height.toLocaleString()}
+					{data.status.confirmed && data.status?.block_height !== undefined && (
+						<>
+							<br />
+							blockheight?: {data.status.block_height.toLocaleString()}
+						</>
+					)}
 				</>
 			)}
 		</div>
