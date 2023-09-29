@@ -11,8 +11,7 @@ const TXChecker: React.FC = () => {
 		undefined
 	)
 
-	// todo: type accordingly, synthetic react event?
-	const testTx = (e: { preventDefault: () => void }) => {
+	const testTx = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault()
 		if (txInput === "") {
 			return
