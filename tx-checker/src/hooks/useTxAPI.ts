@@ -1,6 +1,13 @@
 import * as React from "react"
 
-interface TransactionData {}
+// just typing a minimal set, for what we'll need
+interface TransactionData {
+	txid: string
+	status: {
+		confirmed: boolean
+		block_height: number
+	}
+}
 
 interface useTxAPI {
 	checkTx: (txId: string) => Promise<void>
@@ -10,6 +17,7 @@ interface useTxAPI {
 }
 
 const useTxAPI = (): useTxAPI => {
+	// todo: use undefined over null where it makes sense
 	const [data, setData] = React.useState<TransactionData | null>(null)
 	const [loading, setLoading] = React.useState<boolean>(false)
 	const [error, setError] = React.useState<string | null>(null)
