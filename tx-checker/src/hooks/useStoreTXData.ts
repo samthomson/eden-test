@@ -11,7 +11,7 @@ type TXData = {
 }
 
 type UseStoreTXDataResult = {
-	storeTXData: (data: TXData) => Promise<boolean>
+	storeTXData: (data: TXData) => Promise<void>
 	isLoading: boolean
 	error: string | null
 }
@@ -31,21 +31,22 @@ const useStoreTXData = (): UseStoreTXDataResult => {
 	const [isLoading, setIsLoading] = React.useState<boolean>(false)
 	const [error, setError] = React.useState<string | null>(null)
 
-	const storeTXData = async (data: TXData): Promise<boolean> => {
+	const storeTXData = async (data: TXData): Promise<void> => {
 		setIsLoading(true)
 		setError(null)
 
 		try {
-			const docRef = await FireBaseStore.addDoc(
-				FireBaseStore.collection(db, "transactions"),
-				{
-					...data,
-				}
+			const docRef = FireBaseStore.doc(db, "transactions", data.txId)
+
+			const updatedDoc = await FireBaseStore.setDoc(
+				docRef,
+				{ ...data },
+				{ merge: true }
 			)
-			return !!docRef?.id
+
+			return
 		} catch (err: unknown) {
 			setError(err instanceof Error ? err.message : "An unknown error occurred")
-			return false
 		} finally {
 			setIsLoading(false)
 		}
