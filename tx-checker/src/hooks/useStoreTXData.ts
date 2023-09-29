@@ -32,11 +32,11 @@ const useStoreTXData = (): UseStoreTXDataResult => {
 		setError(null)
 
 		try {
+			// first make a reference to our tx based on its id
 			const docRef = FireBaseStore.doc(db, "transactions", data.txId)
 
-			await FireBaseStore.setDoc(docRef, { ...data }, { merge: true })
-
-			return
+			// then create/upsert
+			await FireBaseStore.setDoc(docRef, data, { merge: true })
 		} catch (err: unknown) {
 			setError(err instanceof Error ? err.message : "An unknown error occurred")
 		} finally {
