@@ -32,7 +32,6 @@ assumptions:
 NOTE / TODO:
 - check size/fee calculation carefully CURRENTLY WRONG
 - make form button 'get info'
-- DO update the block status in our db
 
 ## test data
 
