@@ -25,11 +25,14 @@ assumptions:
 - you're happy running yarn/npm locally (ie this code in a dev env), and don't need containers
 - firebase will just be used for this one usecase (store a tx), and so making an app wide provider/hoc isn't needed
 - happy storing duplicate txs (no upserting via tx id)
+- I called the api a second time (per tx) to calculate the confirmations, I could have made an approximation based on the block_height but this is one parameter I thought worth ensuring
+- I called mempools raw api instead of using their package which would have required some polyfilling for the browser (doable but not a priority for this grade). two reqs in one place was still simple enough, albeit on the verge of justifying a refactor.
 
 NOTE / TODO:
 - check size calculation carefully
-- confirmation count not included in api response. could make a crude estimate based on average blocktime or otherwise get the current block height and determine delta.
 
+- make form button 'get info'
+- DO update the block status in our db
 
 ## test data
 

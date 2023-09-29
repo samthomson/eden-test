@@ -3,10 +3,13 @@ import useTxAPI from "../hooks/useTxAPI"
 import useStoreTXData from "../hooks/useStoreTXData"
 
 const TXChecker: React.FC = () => {
-	const { checkTx, data, loading, error } = useTxAPI()
+	const { checkTx, txData, loading: isLoading, error } = useTxAPI()
 	const { storeTXData } = useStoreTXData()
 
 	const [txInput, setTxInput] = React.useState<string>("")
+	const [retrievedTXData, setRetrievedTXData] = React.useState<any | undefined>(
+		undefined
+	)
 
 	// todo: type accordingly, synthetic react event?
 	const testTx = (e: { preventDefault: () => void }) => {
@@ -17,12 +20,14 @@ const TXChecker: React.FC = () => {
 		checkTx(txInput)
 	}
 
+	// if we get data back from the api - do something with it
 	React.useEffect(() => {
-		console.log("data", data)
-		if (!!data) {
-			// we just got data back from the API, let's store it to fireb
+		console.log("data", txData)
+		if (!!txData) {
+			setRetrievedTXData(txData)
+			// we got data back from the API, let's store it to fireb
 			storeTXData({
-				txId: data.txid,
+				txId: txData.txid,
 				// todo: derive proper status
 				lastStatus: "last status",
 				// todo: derive this too
@@ -31,7 +36,14 @@ const TXChecker: React.FC = () => {
 				satsPerVbyte: 999,
 			})
 		}
-	}, [data])
+	}, [txData])
+
+	// clear the ui when the user starts typing
+	React.useEffect(() => {
+		setRetrievedTXData(undefined)
+	}, [txInput])
+
+	const isTransactionDataFound = !!txInput && !isLoading && !!retrievedTXData
 
 	return (
 		<div>
@@ -42,22 +54,17 @@ const TXChecker: React.FC = () => {
 					id="tx"
 					name="tx"
 					value={txInput}
-					disabled={loading}
+					disabled={isLoading}
 					onChange={(val) => setTxInput(val.currentTarget.value)}
 				/>
-				<input type="submit" value="Submit" disabled={loading} />
+				<input type="submit" value="Submit" disabled={isLoading} />
 			</form>
 			<hr />
-			{!!data && (
+			{isLoading && <>loading...</>}
+			{isTransactionDataFound && (
 				<>
-					<h4>{data.txid}</h4>
-					confirmed: {data.status.confirmed.toString()}
-					{data.status.confirmed && data.status?.block_height !== undefined && (
-						<>
-							<br />
-							blockheight?: {data.status.block_height.toLocaleString()}
-						</>
-					)}
+					<h4>{retrievedTXData.txid}</h4>
+					Status: {retrievedTXData.status}
 				</>
 			)}
 		</div>
