@@ -2,16 +2,10 @@ import * as React from "react"
 import * as FireBaseApp from "firebase/app"
 import * as FireBaseStore from "firebase/firestore"
 
-// todo: put this and other types in a single declarations file
-type TXData = {
-	txId: string
-	lastStatus: string
-	lastStatusAt: string
-	satsPerVbyte: number
-}
+import * as Types from "../declarations"
 
 type UseStoreTXDataResult = {
-	storeTXData: (data: TXData) => Promise<void>
+	storeTXData: (data: Types.TXData.Complete) => Promise<void>
 	isLoading: boolean
 	error: string | null
 }
@@ -31,7 +25,7 @@ const useStoreTXData = (): UseStoreTXDataResult => {
 	const [isLoading, setIsLoading] = React.useState<boolean>(false)
 	const [error, setError] = React.useState<string | null>(null)
 
-	const storeTXData = async (data: TXData): Promise<void> => {
+	const storeTXData = async (data: Types.TXData.Complete): Promise<void> => {
 		setIsLoading(true)
 		setError(null)
 

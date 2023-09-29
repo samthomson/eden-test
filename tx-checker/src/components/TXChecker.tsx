@@ -23,21 +23,11 @@ const TXChecker: React.FC = () => {
 	// if we get data back from the api - do something with it
 	React.useEffect(() => {
 		console.log("data", txData)
-		if (!!txData) {
-			setRetrievedTXData(txData)
-			// we got data back from the API, let's store it to fireb
-			const { txid, status, lastStatusAt, satsPerVbyte } = txData
-			// if ()
-			storeTXData({
-				txId: txid,
-				// todo: derive proper status
-				lastStatus: status,
-				// todo: derive this too
-				lastStatusAt,
-				// todo: and this
-				// default to better than 0
-				satsPerVbyte: satsPerVbyte ?? 0,
-			})
+		// display the tx data - irrespecive of whether we found a broadcast tx or not
+		setRetrievedTXData(txData)
+		// if it did exist on the network, let's store it to our db
+		if (txData?.isBroadCast) {
+			storeTXData(txData)
 		}
 	}, [txData])
 

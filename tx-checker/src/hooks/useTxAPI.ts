@@ -1,17 +1,10 @@
 import * as React from "react"
-
-// just typing a minimal set, for what we'll need
-interface TransactionData {
-	txid: string
-	status: string
-	confirmations?: number
-	lastStatusAt: string
-	satsPerVbyte?: number
-}
+import * as Types from "../declarations"
+import * as DataUtil from "../util/data"
 
 interface useTxAPI {
 	checkTx: (txId: string) => Promise<void>
-	txData: TransactionData | undefined
+	txData: Types.TransactionData | undefined
 	loading: boolean
 	error: string | null
 }
@@ -19,11 +12,13 @@ interface useTxAPI {
 
 const useTxAPI = (): useTxAPI => {
 	// todo: use undefined over null where it makes sense
-	const [data, setData] = React.useState<TransactionData | undefined>(undefined)
+	const [data, setData] = React.useState<Types.TransactionData | undefined>(
+		undefined
+	)
 	const [loading, setLoading] = React.useState<boolean>(false)
 	const [error, setError] = React.useState<string | null>(null)
 
-	const checkTx = async (txId: string) => {
+	const checkTx = async (txId: string): Promise<void> => {
 		setLoading(true)
 		setError(null)
 
@@ -34,18 +29,19 @@ const useTxAPI = (): useTxAPI => {
 
 			if (txDataResponse.status === 400) {
 				setData({
-					txid: txId,
+					isBroadCast: false,
+					txId,
 					status: "Transaction not found.",
 					// todo: duplication here with below, write something more elegant
 					lastStatusAt: new Date().toISOString(),
-				})
+				} as Types.TXData.Incomplete)
 				return
 			}
 
 			if (!txDataResponse?.ok) {
 				setError("Failed to fetch transaction data")
 			}
-			const txData = await txDataResponse.json()
+			const txData: Types.API.TXData = await txDataResponse.json()
 
 			const blockHeightResponse = await fetch(
 				`https://mempool.space/api/blocks/tip/height`
@@ -63,15 +59,21 @@ const useTxAPI = (): useTxAPI => {
 			const isConfirmed = txData.status.confirmed
 			const confirmationCount = currentBlockHeight - txData.status.block_height
 
-			const data: TransactionData = {
+			const { fee: ignoreThisFee, weight } = txData
+
+			const fee = DataUtil.deriveFeeFromTXData(txData)
+			const satsPerVbyte = DataUtil.getVSatsPerByte(fee, weight)
+
+			const data: Types.TXData.Complete = {
+				isBroadCast: true,
 				// todo: standardise this prop
-				txid: txId,
+				txId,
 				status: isConfirmed
 					? `The transaction has ${confirmationCount} confirmations`
 					: "Transaction is currently in the mempool and has 0 block-confirmations",
 				confirmations: confirmationCount,
 				lastStatusAt: new Date().toISOString(),
-				satsPerVbyte: txData.size / txData.fee,
+				satsPerVbyte,
 			}
 
 			setData(data)

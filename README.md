@@ -6,7 +6,7 @@
 - tx state is looked up, specifically
 	- if it's in the mempool
 	- how many blocks have secured it
-- save the tx status to firestore *
+- save the tx status to firestore
 	- txid
 	- lastStatusAt (datetime of last known tx state change)
 	- lastStatus: string literalisation of status desc.
@@ -25,12 +25,14 @@ assumptions:
 - you're happy running yarn/npm locally (ie this code in a dev env), and don't need containers
 - firebase will just be used for this one usecase (store a tx), and so making an app wide provider/hoc isn't needed
 - happy storing duplicate txs (no upserting via tx id)
-- I called the api a second time (per tx) to calculate the confirmations, I could have made an approximation based on the block_height but this is one parameter I thought worth ensuring
+- I called the api a second time (per tx) to calculate the confirmations, I could have made an approximation based on the block_height but this is one value I thought worth ensuring
 - I called mempools raw api instead of using their package which would have required some polyfilling for the browser (doable but not a priority for this grade). two reqs in one place was still simple enough, albeit on the verge of justifying a refactor.
 - I chose to represent the `lastStatusAt` as a string representation, since we are only using it in the db record (where iso string timestamps are more typical, compared to unix [milli]seconds)
+- I calculated the satsPerVbyte via the fee as defined in the spec (sum inputs - sum outputs), even though the fee is defined in the api response. ordinarily this mightn't make sense, as if we trust the api then we could trust the api for the fee. But without a discussion, why not ;) - for now
+- simiarly I did *not* calculate the tx size from inputs/outputs as that would be more complex (I believe diff tx types affect this a bit) and prob outwith the scope of this task - but happy to go further on this if need be.
+- I used weight / 4 for the tx size in calculating satsPerVbyte, which I believe is safer for segwit and legacy txs - this is an area I not 100% on and would be keen to discuss (or if in reality, research more thoroughly first)
 
 NOTE / TODO:
-- check size/fee calculation carefully CURRENTLY WRONG
 - broad range of test txs
 
 ## test data
