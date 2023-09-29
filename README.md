@@ -6,7 +6,7 @@
 - tx state is looked up, specifically
 	- if it's in the mempool
 	- how many blocks have secured it
-- save the tx status to firestore
+- save the tx status to firestore (see assumption 1)
 	- txid
 	- lastStatusAt (datetime of last known tx state change)
 	- lastStatus: string literalisation of status desc.
@@ -19,20 +19,24 @@
 		- if mined; confirmation-count
 
 
-assumptions:
-- * storing tx data to firebase, not user - look up - behaviour ie if a tx is not found, then we won't store anything to the db
+##### assumptions:
+- storing **tx data** to firebase, *not* user - look up - behaviour ie if a tx is not found, then we won't store anything to the db
 - don't care about an insecure firebase setup for this project
 - you're happy running yarn/npm locally (ie this code in a dev env), and don't need containers
 - firebase will just be used for this one usecase (store a tx), and so making an app wide provider/hoc isn't needed
-- happy storing duplicate txs (no upserting via tx id)
-- I called the api a second time (per tx) to calculate the confirmations, I could have made an approximation based on the block_height but this is one value I thought worth ensuring
-- I called mempools raw api instead of using their package which would have required some polyfilling for the browser (doable but not a priority for this grade). two reqs in one place was still simple enough, albeit on the verge of justifying a refactor.
-- I chose to represent the `lastStatusAt` as a string representation, since we are only using it in the db record (where iso string timestamps are more typical, compared to unix [milli]seconds)
-- I calculated the satsPerVbyte via the fee as defined in the spec (sum inputs - sum outputs), even though the fee is defined in the api response. ordinarily this mightn't make sense, as if we trust the api then we could trust the api for the fee. But without a discussion, why not ;) - for now
-- simiarly I did *not* calculate the tx size from inputs/outputs as that would be more complex (I believe diff tx types affect this a bit) and prob outwith the scope of this task - but happy to go further on this if need be.
-- I used weight / 4 for the tx size in calculating satsPerVbyte, which I believe is safer for segwit and legacy txs - this is an area I not 100% on and would be keen to discuss (or if in reality, research more thoroughly first)
+- will not be storing duplicate txs (upserting on tx id, with latest status - no historical status)
+- for lastStatusAt I'll just log when I called the mempool api, since our status derivation is quite basic and we aren't really tracking the point of status change (ie when a tx was mined, or when the number of blocks changed - this would ultimately always be the latest blocks block_time anyway), could adjust this upon clarification of the requirement.
 
-NOTE / TODO:
+##### notes:
+- I called the api a second time (per tx) to calculate the confirmations, I could have made an approximation based on the block_time and current time but this is one value I thought worth ensuring
+- I called mempools raw api instead of using their package which would have required some webpack polyfilling for the browser (doable but not a priority for this grade). two reqs in one place was still simple enough, albeit on the verge of justifying a refactor.
+- I chose to represent the `lastStatusAt` as a string representation, since we are only using it in the db record (where iso string timestamps are more typical, compared to unix [milli]seconds)
+- I calculated the satsPerVbyte via the fee as defined in the spec (sum inputs - sum outputs), even though the fee is defined in the api response. ordinarily this mightn't make sense, as if we trust the api for other tx data then we could trust the api for the fee. But without a discussion, why not ;) - for now
+- simiarly I did *not* calculate the tx size from inputs/outputs as that would be more complex (I believe diff tx types affect this a bit) and prob outwith the scope of this task - but happy to go further on this if need be.
+- I used weight / 4, and not size, for the tx size in calculating satsPerVbyte, which I believe is safer for segwit and legacy txs - this is an area I not 100% on and would be keen to discuss (or if in reality, research more thoroughly first)
+- we're only interested in mainnet txs
+
+##### NOTE / TODO:
 - broad range of test txs
 
 ## test data
