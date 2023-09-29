@@ -21,7 +21,10 @@
 
 assumptions:
 - * storing tx data to firebase, not user - look up - behaviour ie if a tx is not found, then we won't store anything to the db
-
+- don't care about an insecure firebase setup for this project
+- you're happy running yarn/npm locally (ie this code in a dev env), and don't need containers
+- firebase will just be used for this one usecase (store a tx), and so making an app wide provider/hoc isn't needed
+- happy storing duplicate txs (no upserting via tx id)
 
 NOTE / TODO:
 - check size calculation carefully

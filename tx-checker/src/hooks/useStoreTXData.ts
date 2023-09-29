@@ -1,4 +1,6 @@
 import * as React from "react"
+import * as FireBaseApp from "firebase/app"
+import * as FireBaseStore from "firebase/firestore"
 
 // todo: put this and other types in a single declarations file
 type TXData = {
@@ -13,6 +15,17 @@ type UseStoreTXDataResult = {
 	isLoading: boolean
 	error: string | null
 }
+// todo: think about how all this is hardcoded
+const firebaseConfig = {
+	apiKey: "AIzaSyA_XUPTK2gSD7CXR-CJpv9d-K9scnx1mEQ",
+	authDomain: "eden-code-challenge.firebaseapp.com",
+	projectId: "eden-code-challenge",
+	storageBucket: "eden-code-challenge.appspot.com",
+	messagingSenderId: "381431633150",
+	appId: "1:381431633150:web:15be4197455d4a017b81af",
+}
+const app = FireBaseApp.initializeApp(firebaseConfig)
+const db = FireBaseStore.getFirestore(app)
 
 const useStoreTXData = (): UseStoreTXDataResult => {
 	const [isLoading, setIsLoading] = React.useState<boolean>(false)
@@ -23,10 +36,14 @@ const useStoreTXData = (): UseStoreTXDataResult => {
 		setError(null)
 
 		try {
-			// todo: store data in fireb
-			console.log("store this data", data)
-			return true
-		} catch (err) {
+			const docRef = await FireBaseStore.addDoc(
+				FireBaseStore.collection(db, "transactions"),
+				{
+					...data,
+				}
+			)
+			return !!docRef?.id
+		} catch (err: unknown) {
 			setError(err instanceof Error ? err.message : "An unknown error occurred")
 			return false
 		} finally {
