@@ -86,7 +86,7 @@ const useTxAPI = (): useTxAPI => {
 				isBroadCast: true,
 				txId,
 				status: isConfirmed
-					? `The transaction has ${confirmationCount} confirmations`
+					? `The transaction has ${confirmationCount.toLocaleString()} confirmations`
 					: "Transaction is currently in the mempool and has 0 block-confirmations",
 				confirmations: confirmationCount,
 				lastStatusAt,
