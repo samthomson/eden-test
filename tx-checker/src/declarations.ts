@@ -23,7 +23,7 @@ export namespace API {
 	export type TXData = {
 		txid: string
 		vin: {
-			prevout: {
+			prevout?: {
 				value: number
 			}
 		}[]

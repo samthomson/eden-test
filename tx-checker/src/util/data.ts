@@ -1,8 +1,13 @@
 import * as Types from "../declarations"
 
 export const deriveFeeFromTXData = (apiTXData: Types.API.TXData): number => {
+	// check coinbase tx
+	if (!apiTXData.vin?.[0]?.prevout?.value) {
+		return 0
+	}
+
 	const inputsTotal = apiTXData.vin.reduce(
-		(acc, input) => acc + input.prevout.value,
+		(acc, input) => acc + (input?.prevout?.value ?? 0),
 		0
 	)
 	const outputsTotal = apiTXData.vout.reduce(
