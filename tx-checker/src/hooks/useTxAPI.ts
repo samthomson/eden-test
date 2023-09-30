@@ -39,7 +39,7 @@ const useTxAPI = (): useTxAPI => {
 			const txDataResponse = await fetch(`https://mempool.space/api/tx/${txId}`)
 
 			// handle 400 error from api accordingly
-			if (txDataResponse.status === 400) {
+			if (txDataResponse.status === 400 || txDataResponse.status === 404) {
 				setData({
 					isBroadCast: false,
 					txId,
