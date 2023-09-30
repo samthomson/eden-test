@@ -14,6 +14,8 @@ export namespace TXData {
 		confirmations: number
 		satsPerVbyte: number
 	}
+
+	export type Store = Omit<Complete, "isBroadCast">
 }
 export type TransactionData = TXData.Complete | TXData.Incomplete
 

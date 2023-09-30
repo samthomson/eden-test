@@ -18,7 +18,8 @@ const TXChecker: React.FC = () => {
 		setRetrievedTXData(txData)
 		// if it did exist on the network, let's store it to our db
 		if (txData?.isBroadCast) {
-			storeTXData(txData)
+			const { isBroadCast, ...txDataToStore } = txData
+			storeTXData(txDataToStore)
 		}
 	}, [txData])
 

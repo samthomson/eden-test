@@ -5,7 +5,7 @@ import * as FireBaseStore from "firebase/firestore"
 import * as Types from "../declarations"
 
 type UseStoreTXDataResult = {
-	storeTXData: (data: Types.TXData.Complete) => Promise<void>
+	storeTXData: (data: Types.TXData.Store) => Promise<void>
 	isLoading: boolean
 	error: string | undefined
 }
@@ -28,7 +28,7 @@ const useStoreTXData = (): UseStoreTXDataResult => {
 	const [isLoading, setIsLoading] = React.useState<boolean>(false)
 	const [error, setError] = React.useState<string | undefined>(undefined)
 
-	const storeTXData = async (data: Types.TXData.Complete): Promise<void> => {
+	const storeTXData = async (data: Types.TXData.Store): Promise<void> => {
 		setIsLoading(true)
 		setError(undefined)
 
