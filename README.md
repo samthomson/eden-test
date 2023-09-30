@@ -36,9 +36,17 @@
 - I used weight / 4, and not size, for the tx size in calculating satsPerVbyte, which I believe is safer for segwit and legacy txs - this is an area I not 100% on and would be keen to discuss (or if in reality, research more thoroughly first)
 - we're only interested in mainnet txs
 
+
 ##### NOTE / TODO:
 - broad range of test txs
-
+- todo: don't share firebase config and allow easy env replacement, or?
 ## test data
 
 genesis block coinbase tx (eg blockheight 0): 4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b
+
+## setup and run
+
+1. env vars: `cp tx-checker/.env.sample .env`
+2. complete your env vars after creating a firestore project.
+3. install deps: `cd tx-checker && yarn`
+4. start the cra: `yarn run start`
