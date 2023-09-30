@@ -39,14 +39,13 @@
 
 ##### NOTE / TODO:
 - broad range of test txs
-- todo: don't share firebase config and allow easy env replacement, or?
 ## test data
 
 genesis block coinbase tx (eg blockheight 0): 4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b
 
 ## setup and run
 
-1. env vars: `cp tx-checker/.env.sample .env`
-2. complete your env vars after creating a firestore project.
+1. env vars: `cp tx-checker/.env.sample tx-checker/.env`
+2. complete your env vars after creating a firestore project with database (in test mode - all open connections).
 3. install deps: `cd tx-checker && yarn`
 4. start the cra: `yarn run start`
