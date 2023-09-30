@@ -56,7 +56,7 @@ const useTxAPI = (): useTxAPI => {
 					`https://mempool.space/api/blocks/tip/height`
 				)
 
-				if (!txDataResponse?.ok) {
+				if (!blockHeightResponse?.ok) {
 					setError("Failed to fetch block tip data")
 					return null
 				}
