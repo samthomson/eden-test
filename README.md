@@ -4,22 +4,21 @@
 - react app
 - user enters a tx and clicks 'get info'
 - tx state is looked up, specifically
-	- if it's in the mempool
-	- how many blocks have secured it
+  - if it's in the mempool
+  - how many blocks have secured it
 - save the tx status to firestore (see assumption 1)
-	- txid
-	- lastStatusAt (datetime of last known tx state change)
-	- lastStatus: string literalisation of status desc.
-	- satsPerVbyte: calculate and save the sats per vbyte 
+  - txid
+  - lastStatusAt (datetime of last known tx state change)
+  - lastStatus: string literalisation of status desc.
+  - satsPerVbyte: calculate and save the sats per vbyte
 
 - display tx info
-	- handle/display not found 'error'
-	- tx state
-		- mempool / mined variance
-		- if mined; confirmation-count
+  - handle/display not found 'error'
+  - tx state
+    - mempool / mined variance
+    - if mined; confirmation-count
 
-
-##### assumptions:
+## assumptions
 
 - storing **tx data** to firebase, *not* user - look up - behaviour ie if a tx is not found, then we won't store anything to the db
 - don't care about an insecure firebase setup for this project
@@ -28,7 +27,7 @@
 - will not be storing duplicate txs (upserting on tx id, with latest status - no historical status)
 - for lastStatusAt I'll just log when I called the mempool api, since our status derivation is quite basic and we aren't really tracking the point of status change (ie when a tx was mined, or when the number of blocks changed - this would ultimately always be the latest blocks block_time anyway), could adjust this upon clarification of the requirement.
 
-##### notes:
+## notes
 
 - I called the api a second time (per tx) to calculate the confirmations, I could have made an approximation based on the block_time and current time but this is one value I thought worth ensuring
 - I called mempools raw api instead of using their package which would have required some webpack polyfilling for the browser (doable but not a priority for this grade). two reqs in one place was still simple enough, albeit on the verge of justifying a refactor.
