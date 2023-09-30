@@ -7,7 +7,7 @@ import * as Types from "../declarations"
 type UseStoreTXDataResult = {
 	storeTXData: (data: Types.TXData.Complete) => Promise<void>
 	isLoading: boolean
-	error: string | null
+	error: string | undefined
 }
 
 // ideally this would be outwith this component, and perhaps with env vars passed in more appropriately. outwith the scope of this grade of task.
@@ -25,11 +25,11 @@ const db = FireBaseStore.getFirestore(app)
 
 const useStoreTXData = (): UseStoreTXDataResult => {
 	const [isLoading, setIsLoading] = React.useState<boolean>(false)
-	const [error, setError] = React.useState<string | null>(null)
+	const [error, setError] = React.useState<string | undefined>(undefined)
 
 	const storeTXData = async (data: Types.TXData.Complete): Promise<void> => {
 		setIsLoading(true)
-		setError(null)
+		setError(undefined)
 
 		try {
 			// first make a reference to our tx based on its id
