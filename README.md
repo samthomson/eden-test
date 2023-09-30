@@ -37,6 +37,7 @@
 - simiarly I did *not* calculate the tx size from inputs/outputs as that would be more complex (I believe diff tx types affect this a bit) and prob outwith the scope of this task - but happy to go further on this if need be.
 - I used weight / 4, and not size, for the tx size in calculating satsPerVbyte, which I believe is safer for segwit and legacy txs - this is an area I not 100% on and would be keen to discuss (or if in reality, research more thoroughly first)
 - we're only interested in mainnet txs
+- I determine coinbase txs by asserting there were no prevout inputs to a tx - this of course depends on the api tx data being complete (and not simply missing that tx's input). Another idea could be to check the whole block of the tx, to see tx position.
 
 
 ## setup and run
